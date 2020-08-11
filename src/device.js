@@ -1,4 +1,4 @@
-const functions = require("./functions");
+const store = require("./controllers/store");
 
 exports.device = (data, connection) => {
     if (data != "") {
@@ -20,7 +20,7 @@ exports.device = (data, connection) => {
                 connection.write(data);
                 break;
             default:
-                functions.store(data, model, parts.cmd);
+                store.saveRaw(data, model, parts.cmd);
         }
     }
 };

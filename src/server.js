@@ -1,7 +1,7 @@
 const net = require("net");
 const mongoose = require("mongoose");
 const { device } = require("./device");
-const port = 8090;
+const port = require("./config/index");
 
 const server = net
     .createServer((connection) => {
