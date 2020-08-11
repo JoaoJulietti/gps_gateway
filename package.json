@@ -1,0 +1,9 @@
+{
+    "scripts": {
+        "startDev": "nodemon ./server.js"
+    },
+    "dependencies": {
+        "mongoose": "^5.9.28",
+        "nodemon": "^2.0.4"
+    }
+}
