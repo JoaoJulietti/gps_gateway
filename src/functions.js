@@ -1,5 +1,5 @@
-const Package = require("./src/models/Package");
-const SendCommand = require("./src/models/SendCommand");
+const Package = require("./models/Package");
+const SendCommand = require("./models/SendCommand");
 
 date = new Date();
 const utc_offset = date.getTimezoneOffset();
