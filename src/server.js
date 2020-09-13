@@ -1,14 +1,19 @@
 const net = require("net");
 const mongoose = require("mongoose");
-const { device } = require("./device");
+const { device, listDevices } = require("./device");
 const port = require("./config/index");
+const sendToDevice = require("./helpers/sendToDevice");
+
+
+const devices = listDevices()
 
 const server = net
     .createServer((connection) => {
         connection.on("data", (data) => {
-            device(data.toString(), connection);
+           device(data.toString(), connection);
         });
         connection.on("end", () => {
+            devices.splice(devices.indexOf(connection), 1);
             console.log("device disconnected");
         });
     })
@@ -25,3 +30,17 @@ mongoose.connect(
         useUnifiedTopology: true,
     }
 );
+
+find_device = (deviceId) => {
+    const dev = devices.find((device) => device.uid == deviceId);
+    return dev ? dev.connection : false;
+};
+
+send = (uid, data) => {
+    const deviceConnection = find_device(uid)
+    if (deviceConnection != false) {
+        sendToDevice(data, deviceConnection)
+    } else {
+        console.log("device is not online")
+    }
+}
