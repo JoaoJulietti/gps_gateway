@@ -1,23 +1,12 @@
-const store = require("./controllers/store");
-const sendToDevice = require("./helpers/sendToDevice");
-
-const devices = []
-exports.listDevices = () => {
-  return devices
-}
-
-listDevices = (uid, connection) => {
-  const Devices = {uid, connection}
-  devices.push(Devices);
-}
-
+const Package = require("./controllers/packageController");
+const Device = require("./controllers/DeviceController");
 
 commandHandling = (cmd, trackermodel, data, connection) => { // vai entrar um json
     const Commands = {
-      RG: sendToDevice(data, connection),
-      TX: sendToDevice(data, connection),
-      'MQ#': sendToDevice(data, connection),
-      default: store.saveRaw(data, trackermodel, cmd)
+      RG: Device.sendToDevice(data, connection),
+      TX: Device.sendToDevice(data, connection),
+      'MQ#': Device.sendToDevice(data, connection),
+      default: Package.saveRaw(data, trackermodel, cmd)
     }
     return Commands[cmd] || Commands.default
   }
@@ -31,5 +20,5 @@ exports.device = (data, connection) => {
             cmd: str[2],
         };
         commandHandling(parts.cmd, trackermodel, data, connection)
-        listDevices(parts.device_id, connection)
+        Device.listDevices(parts.device_id, connection)
 };

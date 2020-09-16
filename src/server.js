@@ -1,11 +1,9 @@
 const net = require("net");
 const mongoose = require("mongoose");
-const { device, listDevices } = require("./device");
+const { device } = require("./device");
 const port = require("./config/index");
-const sendToDevice = require("./helpers/sendToDevice");
+const Device = require("./controllers/DeviceController")
 
-
-const devices = listDevices()
 
 const server = net
     .createServer((connection) => {
@@ -13,7 +11,7 @@ const server = net
            device(data.toString(), connection);
         });
         connection.on("end", () => {
-            devices.splice(devices.indexOf(connection), 1);
+            Device.removeDevice(connection)
             console.log("device disconnected");
         });
     })
@@ -31,16 +29,4 @@ mongoose.connect(
     }
 );
 
-find_device = (deviceId) => {
-    const dev = devices.find((device) => device.uid == deviceId);
-    return dev ? dev.connection : false;
-};
-
-send = (uid, data) => {
-    const deviceConnection = find_device(uid)
-    if (deviceConnection != false) {
-        sendToDevice(data, deviceConnection)
-    } else {
-        console.log("device is not online")
-    }
-}
+setInterval(() => Device.searchCommands(), 5000);
