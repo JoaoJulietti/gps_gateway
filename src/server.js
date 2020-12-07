@@ -2,17 +2,22 @@ const net = require("net");
 const mongoose = require("mongoose");
 const { device } = require("./device");
 const port = require("./config/index");
-const Device = require("./controllers/DeviceController")
-
+const Device = require("./controllers/DeviceController");
 
 const server = net
     .createServer((connection) => {
         connection.on("data", (data) => {
-           device(data.toString(), connection);
+            device(data, connection);
         });
         connection.on("end", () => {
-            Device.removeDevice(connection)
+            Device.removeDevice(connection);
             console.log("device disconnected");
+        });
+        connection.setTimeout(360000);
+        connection.on("timeout", () => {
+            connection.destroy();
+            Device.removeDevice(connection);
+            console.log("device timeout");
         });
     })
     .listen(port);
@@ -29,4 +34,4 @@ mongoose.connect(
     }
 );
 
-setInterval(() => Device.searchCommands(), 5000);
+setInterval(() => Device.commandsDbToDevice(), 5000);
