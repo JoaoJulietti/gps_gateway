@@ -1,10 +1,11 @@
-const mongoose = require("mongoose");
+const dynamoose = require("dynamoose");
 
-const SendCommandSchema = new mongoose.Schema({
+const SendCommandSchema = new dynamoose.Schema({
+    id: String,
     data: { type: String },
-    model: String,
+    trackerModel: String,
     date: Date,
     uid: String,
 });
 
-module.exports = mongoose.model("SendCommand", SendCommandSchema);
+module.exports = dynamoose.model("SendCommand", SendCommandSchema);

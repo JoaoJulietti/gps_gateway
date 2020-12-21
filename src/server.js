@@ -1,8 +1,17 @@
 const net = require("net");
-const mongoose = require("mongoose");
 const { device } = require("./device");
 const port = require("./config/index");
 const Device = require("./controllers/DeviceController");
+const AWS = require("aws-sdk");
+
+//Vai entrar no .env
+let awsConfig = {
+    region: "us-east-1",
+    endpoint: "https://dynamodb.us-east-1.amazonaws.com",
+    accessKeyId: "AKIAQ6OTRVTETRSRQ5ES",
+    secretAccessKey: "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",
+};
+AWS.config.update(awsConfig);
 
 const server = net
     .createServer((connection) => {
@@ -26,12 +35,4 @@ server.on("error", (err) => {
     throw err;
 });
 
-mongoose.connect(
-    "mongodb+srv://tracker2020:tracker2020@cluster0.xpwki.mongodb.net/trackerRaw?retryWrites=true&w=majority",
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    }
-);
-
-setInterval(() => Device.commandsDbToDevice(), 5000);
+// setInterval(() => Device.commandsDbToDevice(), 5000);

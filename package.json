@@ -3,7 +3,9 @@
         "start": "nodemon src/server.js"
     },
     "dependencies": {
-        "mongoose": "^5.9.28"
+        "dynamoose": "^2.5.0",
+        "mongoose": "^5.11.8",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "nodemon": "^2.0.4"
