@@ -5,6 +5,7 @@ const Device = require("./controllers/DeviceController");
 const AWS = require("aws-sdk");
 
 //Vai entrar no .env
+// CONEXÃO COM DYNAMO
 let awsConfig = {
     region: "us-east-1",
     endpoint: "https://dynamodb.us-east-1.amazonaws.com",
@@ -13,15 +14,19 @@ let awsConfig = {
 };
 AWS.config.update(awsConfig);
 
+// ABRE CONEXÃO TCP/IP
 const server = net
     .createServer((connection) => {
+        // RECEBE DADOS TCP/IP
         connection.on("data", (data) => {
             device(data, connection);
         });
+        // SE A CONEXÃO CAIR, É REMOVIDO DA LISTA DE RASTREADORES ONLINE
         connection.on("end", () => {
             Device.removeDevice(connection);
             console.log("device disconnected");
         });
+        // SE O RASTREADOR FICAR 6min SEM COMUNICAR, DERRUBO A CONEXÃO E TIRO DA LISTA DE RASTREADORES ONLINE
         connection.setTimeout(360000);
         connection.on("timeout", () => {
             connection.destroy();
@@ -31,8 +36,10 @@ const server = net
     })
     .listen(port);
 
+// EXIBE OS ERROS DE CONEXÃO E MATA A APLICAÇÃO
 server.on("error", (err) => {
     throw err;
 });
 
+// DE TANTO EM TANTO TEMPO, ENTRA NO BANCO E BUSCA OS COMANDOS A SEREM ENVIADOS PARA O RASTREADOR
 // setInterval(() => Device.commandsDbToDevice(), 5000);

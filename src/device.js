@@ -1,6 +1,7 @@
 const Package = require("./controllers/packageController");
 const Device = require("./controllers/DeviceController");
 
+// RESPONDENDO OS COMANDOS DO E3
 commandHandlingE3 = (cmd, trackerModel, data, connection, convertedData) => {
     const Commands = {
         RG: Device.sendToDevice(data, connection),
@@ -11,6 +12,7 @@ commandHandlingE3 = (cmd, trackerModel, data, connection, convertedData) => {
     return Commands[cmd] || Commands.default;
 };
 
+// PEGANDO MODELO DO EQUIPAMENTO
 recognizeModel = (data) => {
     const TrackerModel = {
         "*E": "E3",
@@ -21,6 +23,7 @@ recognizeModel = (data) => {
     return TrackerModel[data] || TrackerModel.default;
 };
 
+// RECEBE CONEXÃO DO RASTREADOR, DESCOBRE O MODELO DO RASTREADOR E VOLTA A INFORMAÇÃO 'TRACKERMODEL'
 exports.device = async (data, connection) => {
     let convertedData = data.toString();
     const trackerModel = await recognizeModel(convertedData.substr(0, 2));
@@ -36,7 +39,8 @@ exports.device = async (data, connection) => {
         commandHandlingE3(parts.cmd, trackerModel, data, connection, convertedData);
     }
 
-    Device.listDevices(parts.device_id, connection);
+    //ACRESCENTA O RASTREADOR NA LISTA DE RASTREADORES ONLINE
+    Device.addDeviceToList(parts.device_id, connection);
 };
 
 //E3 ASCII
