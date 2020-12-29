@@ -18,6 +18,7 @@ const server = net
         connection.on("data", (data) => {
             device(data, connection);
         });
+
         connection.on("end", () => {
             Device.removeDevice(connection);
             console.log("device disconnected");
@@ -35,4 +36,4 @@ server.on("error", (err) => {
     throw err;
 });
 
-// setInterval(() => Device.commandsDbToDevice(), 5000);
+setInterval(() => Device.commandsDbToDevice(), 5000);
